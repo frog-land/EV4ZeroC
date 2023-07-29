@@ -35,7 +35,7 @@ def get_data():
     df_evs["Make/Model"] = df_evs["Make"] + "/" + df_evs["Model"]
     df_evs["Reg Date"] = pd.to_datetime(df_evs["Reg Date"],format="%Y-%m-%d")
     st.session_state["data"] = df_evs
-    st.toast("Welcome to my Streamlit Connections Hackathon Entry!",icon="🇳🇿")
+    #st.toast("Welcome to my Streamlit Connections Hackathon Entry!",icon="🇳🇿")
     return df_evs
 
 def initialise_conns():
