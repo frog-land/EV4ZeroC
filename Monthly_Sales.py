@@ -9,10 +9,8 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import streamlit as st
-from st_gtrends_connection import GTrendsConnection
 import plotly.express as px
-from app_functions import get_data,show_page_header,attr_select
-
+from app_functions import get_data,show_page_header,attr_select,initialise_conns
 ###############################################################################
 # Run the app
 ###############################################################################
@@ -21,10 +19,11 @@ try:
     show_page_header()
     # Get our data
     df_ev_only = get_data()
-    ##################################################################################
-    # Open a connection for Google Trends using ***** st.experimental_connection *****
-    ##################################################################################
-    conn = st.experimental_connection("ev_trends", type=GTrendsConnection)
+    ###############################################################################
+    # Initialise our connection objects if they haven't already been initialised
+    ############################################################################### 
+    initialise_conns()
+
     # Add the filters to the sidebar
     with st.sidebar:
         # Make and Model
@@ -66,14 +65,15 @@ try:
         cols[0].dataframe(df_ev_only[["Year","Month","Make","Model","Count"]],hide_index=True,use_container_width=True)
 
 except Exception as e:
-    st.error("An error has occured loading the requested EV data: " + str(e))
+    # Something has gone wrong
+    st.error("An error has occured loading the EV data: " + str(e))
 try:
     ###############################################################################
     # Use our Google Trends **** connector **** object to get search results
     ############################################################################### 
     # Update the end date to the end of the month
     if gtrends_select_keywords:
-        trend_results = conn.query(keywords=gtrends_select_keywords,
+        trend_results = st.session_state["gt_conn"].query(keywords=gtrends_select_keywords,
                                 from_date=reg_range_start,to_date=reg_range_end)
         # Draw the Google Trends plot
         fig = px.line(trend_results.sort_values("date"), x=trend_results.index, y=gtrends_select_keywords, markers=True,
@@ -88,16 +88,16 @@ try:
             cols[0].dataframe(trend_results[gtrends_select_keywords].reset_index(),use_container_width=True,hide_index=True,
                             column_config={"date": st.column_config.DateColumn("Search Date",format="DD MMM YYYY")})
     else:
+        # No keywords have been selected
         st.info("Please select up to 5 Google Trends keywords.")
 except Exception as e:
+    # Something has gone wrong
     st.error("An error has occured loading Google Trends information: " + str(e))
 
-st.caption("Dataset courtesy NZTA (https://www.nzta.govt.nz/vehicles/how-the-motor-vehicle-register-affects-you/motor-vehicle-registrations-dashboard-and-open-data/)")
+st.toast("Welcome to my Streamlit Connections Hackathon Entry!",icon="🇳🇿")
+# Give credit to the datasource
+st.caption("Dataset courtesy of NZTA (https://www.nzta.govt.nz/vehicles/how-the-motor-vehicle-register-affects-you/motor-vehicle-registrations-dashboard-and-open-data/)")
+
 # Hide menu and footer
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
+hide_streamlit_style = "<style>footer {visibility: hidden;}</style>"
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
