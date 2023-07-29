@@ -94,7 +94,6 @@ except Exception as e:
     # Something has gone wrong
     st.error("An error has occured loading Google Trends information: " + str(e))
 
-st.toast("Welcome to my Streamlit Connections Hackathon Entry!",icon="🇳🇿")
 # Give credit to the datasource
 st.caption("Dataset courtesy of NZTA (https://www.nzta.govt.nz/vehicles/how-the-motor-vehicle-register-affects-you/motor-vehicle-registrations-dashboard-and-open-data/)")
 
