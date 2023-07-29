@@ -25,14 +25,11 @@ try:
         fig.update_layout(bargap=.5) 
         st.plotly_chart(fig,use_container_width=True)
 except Exception as e:
-    st.error("An error has occured: " + str(e))
+    # Something has gone wrong
+    st.error("An error has occured loading this page: " + str(e))
 
-st.caption("Dataset courtesy NZTA (https://www.nzta.govt.nz/vehicles/how-the-motor-vehicle-register-affects-you/motor-vehicle-registrations-dashboard-and-open-data/)")
+st.caption("Dataset courtesy of NZTA (https://www.nzta.govt.nz/vehicles/how-the-motor-vehicle-register-affects-you/motor-vehicle-registrations-dashboard-and-open-data/)")
+
 # Hide menu and footer
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
+hide_streamlit_style = "<style>footer {visibility: hidden;}</style>"
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
