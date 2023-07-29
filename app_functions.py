@@ -10,19 +10,21 @@ import streamlit as st
 import calendar
 import streamlit as st
 from streamlit.runtime.caching import cache_data
-
+from st_gtrends_connection import GTrendsConnection
+from st_evroam_connection import EVRoamConnection
 
 ###############################################################################
 # Define some functions
 ###############################################################################
 def show_page_header():
+    # Write the page header so its the same on each page
     st.set_page_config(page_icon="ev4zeroc.png",layout="wide",page_title="EV4ZeroC")
     st.markdown("<h1 style='text-align: center; font-weight:bold; font-family:comic sans ms; padding-top: 0rem;'>EV4ZeroC</h1>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center;padding-top: 0rem;'>Electric Vehicles Sales in New Zealand </h2>", unsafe_allow_html=True)
-    #st.sidebar.markdown('<h1 style="font-size:small;padding-top: 0rem;">Under development by</h> <a style="text-align: center;font-size:small;padding-top: 0rem;" href="mailto: i.build.apps.4.u@gmail.com">Paula Maddigan</a>', unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;padding-top: 0rem;'>Electric Vehicles in New Zealand </h2>", unsafe_allow_html=True)
     st.sidebar.caption("Developed by Paula Maddigan",help="i.build.apps.4.u@gmail.com")
+
 def get_data():
-    # If data is already in the session state then return it, else load it from file
+    # If the data is already in the session state then return it, else load it from file
     if "data" in st.session_state:
         return st.session_state["data"]
     filename = "EV_Sales.csv"
@@ -34,6 +36,19 @@ def get_data():
     df_evs["Reg Date"] = pd.to_datetime(df_evs["Reg Date"],format="%Y-%m-%d")
     st.session_state["data"] = df_evs
     return df_evs
+
+def initialise_conns():
+    ##################################################################################
+    # Use our st.experimental_connection objects and put in session_state so we can 
+    # use on every page if we wish without creating a new one every time
+    # Open a connection for Google Trends using ***** st.experimental_connection *****
+    # Open a connection for EV Roam using ***** st.experimental_connection *****
+    ##################################################################################
+    if "gt_conn" not in st.session_state:
+        st.session_state["gt_conn"] = st.experimental_connection("ev_trends", type=GTrendsConnection)
+    if "ev_conn" not in st.session_state:
+        st.session_state["ev_conn"] = st.experimental_connection("ev_roam", type=EVRoamConnection)
+
 
 def attr_select(attr,icon,df):
     # Adds a multiselect widget and returns the filtered dataset
@@ -48,6 +63,7 @@ def attr_select(attr,icon,df):
     df = df[df[attr].isin(the_attr)]
     return df
 
+# A month dictionary so we can display the months in the custom calendar order not alphabetical order
 month_dict = {}
 for i in range(1, 13): 
     month = calendar.month_abbr[i] 
