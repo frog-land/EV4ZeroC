@@ -17,6 +17,10 @@ from app_functions import get_data,show_page_header,attr_select,initialise_conns
 try:
     # Set up the page
     show_page_header()
+    st.write("Use selections on the sidebar :arrow_backward: to filter NZ electric vehicle monthly registration data by Make/Model. Results can be \
+             viewed by time period :alarm_clock: using timeframe or month/year filters.\
+             The prevalence of common keywords captured by Google Trends :chart_with_upwards_trend: over the time period \
+             can be viewed by selecting up to 5 keywords.")
     # Get our data
     df_ev_only = get_data()
     ###############################################################################
@@ -38,7 +42,7 @@ try:
                 df_ev_only = attr_select("Month","",df_ev_only)
             # Get start and end dates depending on month, year, make and model already chosen.
             reg_range_start = df_ev_only["Reg Date"].min().date()
-            reg_range_end = (df_ev_only["Reg Date"].max() + pd.DateOffset(months=1) - pd.DateOffset(days=1)).date()
+            reg_range_end = (df_ev_only["Reg Date"].max() + pd.DateOffset(months=1) - pd.DateOffset(days=2)).date()
         else:
             # Get start and end dates for the slider depending on make and model already chosen.
             slider_start = df_ev_only["Reg Date"].min().date()
@@ -93,6 +97,7 @@ try:
 except Exception as e:
     # Something has gone wrong
     st.error("An error has occured loading Google Trends information: " + str(e))
+
 
 # Give credit to the datasource
 st.caption("Dataset courtesy of NZTA (https://www.nzta.govt.nz/vehicles/how-the-motor-vehicle-register-affects-you/motor-vehicle-registrations-dashboard-and-open-data/)")
