@@ -12,6 +12,7 @@ import plotly.express as px
 try:
     # Set up the page
     show_page_header()
+    st.write("EV charge stations located within New Zealand :world_map: courtesy of NZTA EV Roam.")
     # Get our data
     df_ev_only = get_data()
     ###############################################################################
