@@ -14,13 +14,15 @@ from app_functions import get_data,show_page_header
 try:
     # Set up the page
     show_page_header()
+    st.write("Annual registrations are collated and presented for the top \
+             10 Make/Models :trophy:.")
     # Get our data
     df_ev_only = get_data()
     # Filter by year and plot
     ev_by_year = st.session_state["data"].groupby(["Year","Make/Model"]).sum().reset_index().sort_values(["Year","Count"],ascending=[True,False])
     for year_loop in np.flip(ev_by_year["Year"].unique()):
         fig = px.bar(ev_by_year[ev_by_year["Year"]==year_loop].head(10), x="Make/Model", y="Count",
-                    title="EV Yearly Registrations in New Zealand for the Top 10 Make/Models in " + year_loop,color='Make/Model',text_auto=True,
+                    title="Annual EV Registrations in New Zealand for the Top 10 Make/Models in " + year_loop,color='Make/Model',text_auto=True,
                      color_discrete_sequence=px.colors.sequential.Viridis )
         fig.update_layout(bargap=.5) 
         st.plotly_chart(fig,use_container_width=True)
