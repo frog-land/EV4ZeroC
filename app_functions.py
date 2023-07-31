@@ -27,6 +27,7 @@ def get_data():
     # If the data is already in the session state then return it, else load it from file
     if "data" in st.session_state:
         return st.session_state["data"]
+    st.cache_resource.clear()
     filename = "EV_Sales.csv"
     df_evs = pd.read_csv(filename)#
     df_evs["Year"] = df_evs["Year"].astype(str)
